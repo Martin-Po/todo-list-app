@@ -23,7 +23,14 @@ listsRouter.get('/', async (request, response) => {
     try {
         const lists = await List.find({}).populate({
             path: 'owner',
-            select: '-list -role',
+            select: '-list -role -player -name',
+        })
+        .populate({
+            path: 'listelements',
+            select: '-list -creator',
+        }).populate({
+            path: 'collaborators',
+            select: '-list -role -player -name',
         })
 
         LogEntry.result = 'Success'

@@ -25,7 +25,14 @@ const listSchema = new mongoose.Schema({
             ref: 'Listelement',
             default: null
         }
-    ]
+    ],
+    pinned: [
+        {   
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            default: []
+        }
+    ],
 })
 
 listSchema.set('toJSON', {

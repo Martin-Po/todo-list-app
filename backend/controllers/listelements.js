@@ -86,8 +86,6 @@ listelementsRouter.post(
     
 
         const body = request.body
-        console.log(request.body)
-        console.log('llegó')
         let LogEntry = new Log ({
             user: request.user.id,
             action: 'Create new list element on list',
@@ -103,12 +101,8 @@ listelementsRouter.post(
 
             const list = await List.findById(body.list)
 
-            console.log(body.list)
-            console.log(list);
-
             const decodedToken = jwt.verify(request.token, process.env.SECRET)
             const user = request.user
-            console.log('llegó2')
             if (!decodedToken.id) {
                 LogEntry.result = 'Failed'
                 LogEntry.resultmessage= 'token invalid' 
@@ -127,13 +121,6 @@ listelementsRouter.post(
 
             LogEntry.action.concat(list.id)
 
-            console.log(list);
-            console.log(user);
-
-            console.log(list.owner.toString());
-            console.log(user.id);
-
-
             if (list.owner.toString() !== user.id && !list.collaborators.some(collaboratorId => collaboratorId.toString() === user.id)) {
                 LogEntry.result = 'Failed'
                 LogEntry.resultmessage= 'User does not have access to this list' 
@@ -141,7 +128,6 @@ listelementsRouter.post(
                 return response.status(401).json({ error: 'User does not have access to this list' })
             }
 
-            console.log('llegó5')
             if (!body.description) {
                 LogEntry.result = 'Failed'
                 LogEntry.resultmessage= 'description missing' 
@@ -150,8 +136,6 @@ listelementsRouter.post(
                     error: 'description missing',
                 })
             }
-            console.log('llegó6')
-            console.log('cargando listelement')
 
             const listelement = new Listelement({
                 description: body.description,
@@ -196,7 +180,7 @@ listelementsRouter.put('/:id', async (request, response, next) => {
     const body = request.body;
 
     let LogEntry = new Log ({
-        user: request.user.id,
+        user: request.user ? request.user.id : null,
         action: 'Edit list element ',
         method: 'PUT',
         endpoint: '/api/listelements/' + request.params.id,
@@ -240,16 +224,27 @@ listelementsRouter.put('/:id', async (request, response, next) => {
             return response.status(400).json({ error: 'Cannot update both description and checked state' });
         }
 
+
+        console.log();
         // Update checked
-        if (body.checked) {
+        if ('checked' in body && typeof body.checked === 'boolean') {
+            console.log('en el if');
+
+            LogEntry.result = 'Success'
+            console.log(LogEntry.result);
+            LogEntry.resultmessage= 'Checked status changed'
             listElement.checked = body.checked;
         }
 
         // Update description
         if (body.description) {
+            LogEntry.result = 'Success'
+            LogEntry.resultmessage= 'Description changed'
             listElement.description = body.description;
         }
 
+        console.log('en el cambio');
+        console.log(LogEntry.result);
        LogEntry.newstate = listElement
 
         // Save the updated list
