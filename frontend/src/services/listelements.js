@@ -22,6 +22,7 @@ const create = async newObject => {
 }
 
 const update = async (id, newObject) => {
+    console.log('entro aca por alguna razon');
     console.log('en el servicio');  
     console.log(id);
     console.log(newObject);

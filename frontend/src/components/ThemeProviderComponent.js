@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { ThemeProvider } from '@emotion/react';
 import { theme, darkTheme } from '../Theme';
 
+
 const ThemeProviderComponent = ({ children }) => {
   const activeTheme = useSelector((state) => state.activeTheme);
 

@@ -23,9 +23,7 @@ function App() {
 
 
     useEffect(() => {
-        dispatch(initializeLoggedUser()).then(() => {
-            listelementsService.setToken(loggeduser.user.token);
-        })
+        dispatch(initializeLoggedUser())
     }, [dispatch])
 
     const [loaded, setloaded] = useState(false)
@@ -35,9 +33,13 @@ function App() {
 
     useEffect(() => {
         if (loggeduser.user.length === 0){
-            dispatch(setLists(null))
+            dispatch(setLists(null))   
+            listelementsService.setToken(null);
+
         }
         else{
+            console.log('seteando el token' + loggeduser.user.token);
+            listelementsService.setToken(loggeduser.user.token);
             console.log('entro a la carga');
             dispatch(initializeLists()).then(() => {
                 setloaded(true);

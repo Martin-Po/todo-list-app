@@ -158,10 +158,11 @@ export const checkListElement = (listId, listElementId, Newchecked) => {
         try {
             console.log('en el reducer');
             console.log(listId);
-            await listelementService.update(listElementId, {checked: Newchecked});
             dispatch(checkElement({ listId, listElementId, Newchecked }))
+            await listelementService.update(listElementId, {checked: Newchecked});
         } catch (error) {
             // Handle error
+            dispatch(checkElement({ listId, listElementId, Newchecked: !Newchecked }))
             console.error('Error deleting list element:', error)
         }
     }

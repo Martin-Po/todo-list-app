@@ -1,24 +1,32 @@
-import { Box, Checkbox, Skeleton, Typography } from '@mui/material'
+import {
+    Box,
+    Checkbox,
+    Skeleton,
+    Button,
+    Card,
+    CardActions,
+    Chip,
+    Divider,
+    List,
+    ListItem,
+    Typography,
+} from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
 import * as React from 'react'
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
-import CardMedia from '@mui/material/CardMedia'
-import { CardActionArea } from '@mui/material'
-import Grid from '@mui/material/Unstable_Grid2/Grid2'
+import Grid from '@mui/material/Grid'
 import { checkListElement } from '../reducers/listReducer'
-
-
+import Check from '@mui/icons-material/Check'
+import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight'
 
 function TodoLists({ loaded, lists }) {
-
     const dispatch = useDispatch()
 
     const handleChange = (listId, elementId) => (event) => {
-        const newCheckedState = event.target.checked;
-        dispatch(checkListElement( listId.toString(), elementId, newCheckedState ));
+        const newCheckedState = event.target.checked
+        dispatch(
+            checkListElement(listId.toString(), elementId, newCheckedState)
+        )
     }
-
 
     const languaje = useSelector((state) => state.languaje)
     if (loaded && lists && lists.length > 0) {
@@ -42,17 +50,74 @@ function TodoLists({ loaded, lists }) {
                             sx={{ padding: '1rem' }}
                             key={list.id}
                         >
-                            <Box>
-                                {list.name}
-                            </Box>
-                            <Box>
-                                {list.listelements.map(element => {return (<Checkbox
-  checked={element.checked}
-  onChange={handleChange(list.id, element.id)}
-  inputProps={{ 'aria-label': 'controlled' }}
-/>)})}
-                            </Box>
-                            
+                            <Card size="lg" variant="outlined">
+                                <Typography
+                                    paddingLeft="1.5rem"
+                                    level="h2"
+                                    fontWeight={600}
+                                    fontSize={'1.5rem'}
+                                >
+                                    {list.name}
+                                </Typography>
+                                <Divider inset="none" />
+                                <List
+                                    size="sm"
+                                    sx={{
+                                        mx: 'calc(-1 * var(--ListItem-paddingX))',
+                                    }}
+                                >
+                                    {list.listelements.filter(element => element.checked).map((element) => {
+                                        return (
+                                            <Box>
+                                                <ListItem>
+                                                    <Checkbox
+                                                        checked={
+                                                            element.checked
+                                                        }
+                                                        onChange={handleChange(
+                                                            list.id,
+                                                            element.id
+                                                        )}
+                                                        inputProps={{
+                                                            'aria-label':
+                                                                'controlled',
+                                                        }}
+                                                    />
+                                                    <Typography>
+                                                        {element.description}
+                                                    </Typography>
+                                                </ListItem>
+                                            </Box>
+                                        )
+                                    })}
+                                <Divider variant="middle" />
+
+                                    {list.listelements.filter(element => !element.checked).map((element) => {
+                                        return (
+                                            <Box>
+                                                <ListItem>
+                                                    <Checkbox
+                                                        checked={
+                                                            element.checked
+                                                        }
+                                                        onChange={handleChange(
+                                                            list.id,
+                                                            element.id
+                                                        )}
+                                                        inputProps={{
+                                                            'aria-label':
+                                                                'controlled',
+                                                        }}
+                                                    />
+                                                    <Typography>
+                                                        {element.description}
+                                                    </Typography>
+                                                </ListItem>
+                                            </Box>
+                                        )
+                                    })}
+                                </List>
+                            </Card>
                         </Grid>
                     )
                 })}

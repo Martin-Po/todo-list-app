@@ -176,8 +176,9 @@ listelementsRouter.post(
     }
 )
 
-listelementsRouter.put('/:id', async (request, response, next) => {
+listelementsRouter.put('/:id',  middleware.userExtractor, async (request, response, next) => {
     const body = request.body;
+    const user = request.user
 
     let LogEntry = new Log ({
         user: request.user ? request.user.id : null,
@@ -194,6 +195,8 @@ listelementsRouter.put('/:id', async (request, response, next) => {
     try {
         // Find the list by ID
         const listElement = await listelement.findById(request.params.id);
+        const list = await List.findById(listElement.list)
+
         
 
 
@@ -224,6 +227,13 @@ listelementsRouter.put('/:id', async (request, response, next) => {
             return response.status(400).json({ error: 'Cannot update both description and checked state' });
         }
 
+
+        if (list.owner.toString() !== user.id && !list.collaborators.some(collaboratorId => collaboratorId.toString() === user.id)) {
+            LogEntry.result = 'Failed'
+            LogEntry.resultmessage= 'User does not have access to this list' 
+
+            return response.status(401).json({ error: 'User does not have access to this list' })
+        }
 
         console.log();
         // Update checked
