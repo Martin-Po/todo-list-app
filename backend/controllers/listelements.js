@@ -82,6 +82,7 @@ listelementsRouter.post(
     '/',
     middleware.userExtractor,
     async (request, response, next) => {
+        console.log('entro al controlador');
 
     
 
@@ -141,10 +142,16 @@ listelementsRouter.post(
                 description: body.description,
                 creator: user._id,
                 list: list._id
+                
             })
 
             try {
+            console.log('hasta aca llegó');
+
                 const savedListelement = await listelement.save()
+
+            console.log('hasta aca llegó2');
+
 
                 // Populate the listelement data with listelementskills and listelementpositions
                 const populatedListelement = await Listelement.findById(
@@ -159,6 +166,7 @@ listelementsRouter.post(
 
                 LogEntry.result = 'Sucess'
                 LogEntry.resultmessage= 'List elemement created' 
+            
 
 
                 response.status(201).json(populatedListelement)
@@ -171,6 +179,7 @@ listelementsRouter.post(
             next(exception)
         }
         finally{
+            console.log('aca da el error');
             await LogEntry.save()
         }
     }
@@ -301,7 +310,7 @@ listelementsRouter.delete(
                 LogEntry.resultmessage= 'List element not found'
                 return response.status(404).json({ error: 'Listelement not found' })
             }
-            listelement.action.concat(request.params.id)
+            LogEntry.action.concat(request.params.id)
 
             LogEntry.previousstate = listelement
 

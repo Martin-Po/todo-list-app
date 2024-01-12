@@ -34,11 +34,11 @@ const update = async (id, newObject) => {
     return response.data
 }
 
-const remove = async (listelement) => {
+const remove = async (listElementId) => {
     const config = {
         headers: { Authorization: token },
     }
-    const response = await axios.delete(`${baseUrl}/${listelement}`, config)
+    const response = await axios.delete(`${baseUrl}/${listElementId}`, config)
 
     return response.data
 }

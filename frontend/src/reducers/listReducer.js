@@ -17,13 +17,13 @@ const listSlice = createSlice({
             return action.payload
         },
         addElement(state, action) {
-            const { listId, listElement } = action.payload
+            const { newListElement } = action.payload
 
             return state.map((list) => {
-                if (list.id === listId) {
+                if (list.id === newListElement.list) {
                     return {
                         ...list,
-                        listelements: [...list.listelements, listElement],
+                        listelements: [...list.listelements, newListElement],
                     }
                 }
                 return list
@@ -126,14 +126,14 @@ export const deleteListById = (id) => {
     }
 }
 
-export const createListElement = (listId, description) => {
+export const createListElement = (list, description) => {
     return async (dispatch) => {
         try {
             const newListElement = await listelementService.create({
-                listId,
+                list,
                 description,
             })
-            dispatch(addElement({ newListElement, listId }))
+            dispatch(addElement({ newListElement }))
         } catch (error) {
             // Handle error
             console.error('Error updating list element:', error)
@@ -144,7 +144,7 @@ export const createListElement = (listId, description) => {
 export const deleteListElement = (listId, listElementId) => {
     return async (dispatch) => {
         try {
-            await listelementService.remove({ listelement: listElementId })
+            await listelementService.remove( listElementId )
             dispatch(eraseElement({ listId, listElementId }))
         } catch (error) {
             // Handle error

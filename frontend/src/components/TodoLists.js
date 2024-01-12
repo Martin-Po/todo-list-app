@@ -10,16 +10,27 @@ import {
     List,
     ListItem,
     Typography,
+    TextField,
+    IconButton,
 } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
 import * as React from 'react'
 import Grid from '@mui/material/Grid'
-import { checkListElement } from '../reducers/listReducer'
-import Check from '@mui/icons-material/Check'
-import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight'
+import { checkListElement, deleteListElement } from '../reducers/listReducer'
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import NewElement from './NewElement'
 
 function TodoLists({ loaded, lists }) {
     const dispatch = useDispatch()
+
+    const handleDelete = (listId, listElementId) => {
+        dispatch(
+            deleteListElement(listId, listElementId)
+        )
+    }
+
+
 
     const handleChange = (listId, elementId) => (event) => {
         const newCheckedState = event.target.checked
@@ -27,6 +38,7 @@ function TodoLists({ loaded, lists }) {
             checkListElement(listId.toString(), elementId, newCheckedState)
         )
     }
+
 
     const languaje = useSelector((state) => state.languaje)
     if (loaded && lists && lists.length > 0) {
@@ -66,56 +78,74 @@ function TodoLists({ loaded, lists }) {
                                         mx: 'calc(-1 * var(--ListItem-paddingX))',
                                     }}
                                 >
-                                    {list.listelements.filter(element => element.checked).map((element) => {
-                                        return (
-                                            <Box>
-                                                <ListItem>
-                                                    <Checkbox
-                                                        checked={
-                                                            element.checked
-                                                        }
-                                                        onChange={handleChange(
-                                                            list.id,
-                                                            element.id
-                                                        )}
-                                                        inputProps={{
-                                                            'aria-label':
-                                                                'controlled',
-                                                        }}
-                                                    />
-                                                    <Typography>
-                                                        {element.description}
-                                                    </Typography>
-                                                </ListItem>
-                                            </Box>
-                                        )
-                                    })}
-                                <Divider variant="middle" />
+                                    {list.listelements
+                                        .filter((element) => !element.checked)
+                                        .map((element) => {
+                                            return (
+                                                <Box>
+                                                    <ListItem>
+                                                        <Checkbox
+                                                            checked={
+                                                                element.checked
+                                                            }
+                                                            onChange={handleChange(
+                                                                list.id,
+                                                                element.id
+                                                            )}
+                                                            inputProps={{
+                                                                'aria-label':
+                                                                    'controlled',
+                                                            }}
+                                                        />
+                                                        <Typography>
+                                                            {
+                                                                element.description
+                                                            }
+                                                        </Typography>
+                                                        <Box sx={{display:'flex', justifyContent:'flex-end', flex:'1'}}>
+                                                        <IconButton aria-label="delete" onClick={onclick => (handleDelete(list.id, element.id))}>
+  <DeleteIcon />
+</IconButton>
 
-                                    {list.listelements.filter(element => !element.checked).map((element) => {
-                                        return (
-                                            <Box>
-                                                <ListItem>
-                                                    <Checkbox
-                                                        checked={
-                                                            element.checked
-                                                        }
-                                                        onChange={handleChange(
-                                                            list.id,
-                                                            element.id
-                                                        )}
-                                                        inputProps={{
-                                                            'aria-label':
-                                                                'controlled',
-                                                        }}
-                                                    />
-                                                    <Typography>
-                                                        {element.description}
-                                                    </Typography>
-                                                </ListItem>
-                                            </Box>
-                                        )
-                                    })}
+                                                        </Box>
+                                                    </ListItem>
+                                                </Box>
+                                            )
+                                        })}
+                                    <ListItem>
+                                        <NewElement list = {list.id}/>                                        
+                                    </ListItem>
+
+                                    <Divider variant="middle" />
+
+                                    {list.listelements
+                                        .filter((element) => element.checked)
+                                        .map((element) => {
+                                            return (
+                                                <Box>
+                                                    <ListItem>
+                                                        <Checkbox
+                                                            checked={
+                                                                element.checked
+                                                            }
+                                                            onChange={handleChange(
+                                                                list.id,
+                                                                element.id
+                                                            )}
+                                                            inputProps={{
+                                                                'aria-label':
+                                                                    'controlled',
+                                                            }}
+                                                        />
+                                                        <Typography>
+                                                            {
+                                                                element.description
+                                                            }
+                                                        </Typography>
+                                                    </ListItem>
+                                                </Box>
+                                            )
+                                        })}
                                 </List>
                             </Card>
                         </Grid>
