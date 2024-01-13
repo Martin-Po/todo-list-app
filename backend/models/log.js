@@ -38,10 +38,11 @@ const logSchema = new mongoose.Schema(
             default: null
 
         },
-        result: { type: String, required: true },
+        result: { type: String, required: true, default:'Unexpected error' },
         resultmessage: {
             type: String,
             required: true,
+            default:'Unexpected error'
         },
         created: { type: Date, default: Date.now }
     }
