@@ -4,7 +4,6 @@ const mongoose = require('mongoose')
 const listSchema = new mongoose.Schema({
     name: {
         type: String,
-        minLength: [3, 'Must be at least 3 characters long, actual lenght is {VALUE}'],
         required: true
     },
     owner: {
