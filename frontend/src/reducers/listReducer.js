@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import listService from '../services/lists'
 import listelementService from '../services/listelements'
+import NewElement from '../components/NewElement'
 
 const listSlice = createSlice({
     name: 'lists',
@@ -15,6 +16,20 @@ const listSlice = createSlice({
         },
         setLists(state, action) {
             return action.payload
+        },
+
+        changeList(state, action) {
+            const { listId, NewName } = action.payload
+
+            return state.map((list) => {
+                if (list.id === listId) {
+                    return {
+                        ...list,
+                        name: NewName,
+                    }
+                }
+                return list
+            })
         },
         addElement(state, action) {
             const { newListElement } = action.payload
@@ -89,6 +104,7 @@ export const {
     appendList,
     setLists,
     eraseList,
+    changeList,
     addElement,
     eraseElement,
     checkElement,
@@ -106,13 +122,29 @@ export const initializeLists = () => {
 export const createList = (listObject) => {
     return async (dispatch) => {
         try {
-            const newList = await listService.create(listObject)
-            dispatch(appendList(newList))
+            console.log('en la carga');
+            console.log(listObject);
+           const  newList = {name:listObject}
+            const newListPopulated = await listService.create(newList)
+            dispatch(appendList(newListPopulated))
         } catch (error) {
             console.error('Error creatin list:', error)
         }
     }
 }
+
+export const updateList = (listId, NewName) => {
+    return async (dispatch) => {
+        try {
+            await listService.update(listId, {name: NewName})
+            dispatch(changeList({ listId, NewName }))
+        } catch (error) {
+            // Handle error
+            console.error('Error deleting list element:', error)
+        }
+    }
+}
+
 
 export const deleteListById = (id) => {
     return async (dispatch) => {
@@ -145,7 +177,11 @@ export const deleteListElement = (listId, listElementId) => {
     return async (dispatch) => {
         try {
             await listelementService.remove( listElementId )
+            
+            
             dispatch(eraseElement({ listId, listElementId }))
+           
+            
         } catch (error) {
             // Handle error
             console.error('Error deleting list element:', error)
@@ -171,7 +207,7 @@ export const checkListElement = (listId, listElementId, Newchecked) => {
 export const updateElement = (listId, listElementId, Newdescription) => {
     return async (dispatch) => {
         try {
-            await listelementService.update({ description: Newdescription })
+            await listelementService.update(listElementId, {description: Newdescription})
             dispatch(changeElement({ listId, listElementId, Newdescription }))
         } catch (error) {
             // Handle error

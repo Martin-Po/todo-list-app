@@ -161,7 +161,9 @@ listsRouter.post(
     }
 )
 
-listsRouter.put('/:id', async (request, response, next) => {
+listsRouter.put('/:id',
+middleware.userExtractor,
+async (request, response, next) => {
     const body = request.body
 
     let LogEntry = new Log ({

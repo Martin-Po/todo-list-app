@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { initializeLoggedUser } from './reducers/loginuserReducer'
 import { initializeLists, setLists } from './reducers/listReducer'
 import listelementsService from './services/listelements'
+import listsService from './services/lists'
 
 
 // Access the action
@@ -35,11 +36,15 @@ function App() {
         if (loggeduser.user.length === 0){
             dispatch(setLists(null))   
             listelementsService.setToken(null);
+            listsService.setToken(null);
+
 
         }
         else{
             console.log('seteando el token' + loggeduser.user.token);
             listelementsService.setToken(loggeduser.user.token);
+            listsService.setToken(loggeduser.user.token);
+
             console.log('entro a la carga');
             dispatch(initializeLists()).then(() => {
                 setloaded(true);
