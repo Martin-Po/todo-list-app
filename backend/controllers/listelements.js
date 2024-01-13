@@ -306,6 +306,8 @@ listelementsRouter.delete(
             const user = request.user
             const listelement = await Listelement.findById(request.params.id)
             .populate('creator')
+            console.log('elemento');
+            console.log(listelement);
 
             if (!listelement) {
                 LogEntry.result = 'Failed'
@@ -321,8 +323,13 @@ listelementsRouter.delete(
                 LogEntry.resultmessage= 'token invalid'
                 return response.status(401).json({ error: 'token invalid' })
             }
+            console.log('antes del error');
+            console.log(user);
+            console.log(user.id);
+            console.log(user.role);
+            console.log(listelement);
 
-            if (user.role !== 'admin' && user.id !== listelement.owner.id) {
+            if (user.role !== 'admin' && user.id !== listelement.creator.id) {
                 LogEntry.result = 'Failed'
                 LogEntry.resultmessage= 'must be admin or owner of the list'
                 return response.status(401).json({ error: 'must be admin or owner of the list' })
