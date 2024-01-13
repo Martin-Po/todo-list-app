@@ -300,6 +300,8 @@ listelementsRouter.delete(
             resultmessage: '',
         })
         try {
+            console.log('usuario');
+            console.log(request.user);
             const decodedToken = jwt.verify(request.token, process.env.SECRET)
             const user = request.user
             const listelement = await Listelement.findById(request.params.id)
