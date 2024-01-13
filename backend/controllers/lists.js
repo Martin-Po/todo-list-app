@@ -46,6 +46,48 @@ listsRouter.get('/', async (request, response) => {
     }
 })
 
+listsRouter.get('/byuser', 
+middleware.userExtractor,
+async (request, response) => {
+    let LogEntry = new Log({
+        user: request.user ? request.user.id : null,
+        action: 'Get all lists',
+        method: 'GET',
+        endpoint: `/api/user/${request.params.id}`,
+        body: request.body,
+        previousstate: null,
+        newstate: null,
+        result: '',
+        resultmessage: '',
+    })
+    console.log('enters the endpoint');
+
+    try {
+        const lists = await List.find({ owner: request.user.id }).populate({
+            path: 'owner',
+            select: '-list -role -player -name',
+        })
+        .populate({
+            path: 'listelements',
+            select: '-list -creator',
+        }).populate({
+            path: 'collaborators',
+            select: '-list -role -player -name',
+        })
+
+        LogEntry.result = 'Success'
+        LogEntry.resultmessage = 'Lists returned'
+
+        response.json(lists)
+    } catch (exception) {
+        LogEntry.result = 'Unexpected error'
+        LogEntry.resultmessage = exception.message
+        next(exception)
+    } finally {
+        await LogEntry.save()
+    }
+})
+
 listsRouter.get('/:id', async (request, response, next) => {
     let LogEntry = new Log({
         user: request.user ? request.user.id : null,

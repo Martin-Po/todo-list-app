@@ -34,9 +34,9 @@ function App() {
 
     useEffect(() => {
         if (loggeduser.user.length === 0){
-            dispatch(setLists(null))   
             listelementsService.setToken(null);
             listsService.setToken(null);
+            dispatch(setLists(null))   
 
 
         }
